@@ -1,0 +1,2 @@
+defmodule Surrogate do
+end
