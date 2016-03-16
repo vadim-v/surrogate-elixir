@@ -14,11 +14,22 @@ defmodule Surrogate.PubSub do
     GenServer.call(__MODULE__, {:subscribe, topic})
   end
 
+  def unsubscribe(topic) do
+    GenServer.call(__MODULE__, {:unsubscribe, topic})
+  end
+
   def handle_call({:subscribe, topic}, {pid, _}, %{conn: conn, subs: subs} = state) do
     :ok = Redix.PubSub.subscribe(conn, topic, self())
 
     tops = Map.get(subs, pid, MapSet.new)
     subs = Map.put(subs, pid, MapSet.put(tops, topic))
+
+    {:reply, :ok, %{state | subs: subs}}
+  end
+
+  def handle_call({:unsubscribe, topic}, {pid, _}, %{subs: subs} = state) do
+    tops = Map.get(subs, pid, MapSet.new)
+    subs = Map.put(subs, pid, MapSet.delete(tops, topic) )
 
     {:reply, :ok, %{state | subs: subs}}
   end
