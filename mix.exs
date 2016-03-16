@@ -14,7 +14,10 @@ defmodule Surrogate.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger]]
+    [
+      mod: {Surrogate, []},
+      applications: [:cowboy, :plug, :logger]
+    ]
   end
 
   # Dependencies can be Hex packages:
@@ -28,7 +31,9 @@ defmodule Surrogate.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:redix, "~> 0.3"}
+      {:redix, "~> 0.3"},
+      {:plug, "~> 1.0"},
+      {:cowboy, "~> 1.0"}
     ]
   end
 end
